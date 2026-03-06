@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verifica tu billetito - Descargar</title>
+    <title>Verifica tu billetito</title>
     <style>
         * {
             margin: 0;
@@ -12,366 +12,604 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
             line-height: 1.6;
-            color: #333;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
+            color: #1a1a1a;
+            background: #f5f5f5;
         }
 
         .container {
-            max-width: 900px;
+            max-width: 1200px;
             margin: 0 auto;
+            padding: 40px 20px 120px 20px;
         }
 
         header {
-            text-align: center;
-            color: white;
-            margin-bottom: 40px;
-            padding: 40px 20px;
+            display: none;
         }
 
-        header h1 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
+        .card h1 {
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+            margin-top: 0;
+            font-weight: 700;
+            letter-spacing: -0.5px;
         }
 
-        header p {
-            font-size: 1.2em;
-            opacity: 0.9;
+        .card > p:first-of-type {
+            font-size: 1rem;
+            color: #666;
+            font-weight: 400;
+            line-height: 1.6;
+            margin-bottom: 0;
         }
 
-        .content {
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+
+        .card {
             background: white;
             border-radius: 12px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-            overflow: hidden;
+            padding: 32px;
+            border: 1px solid #e0e0e0;
+            transition: all 0.3s ease;
         }
 
-        .section {
-            padding: 40px;
-            border-bottom: 1px solid #eee;
+        .card:hover {
+            border-color: #333;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
         }
 
-        .section:last-child {
-            border-bottom: none;
-        }
-
-        h2 {
-            color: #667eea;
+        .card h2 {
+            font-size: 1.4rem;
             margin-bottom: 20px;
-            font-size: 1.8em;
+            font-weight: 600;
         }
 
-        .release-box {
-            background: #f8f9fa;
-            border-left: 4px solid #667eea;
-            padding: 20px;
+        .download-section {
             margin-bottom: 20px;
+        }
+
+        .version-info {
+            background: #f9f9f9;
+            padding: 16px;
             border-radius: 8px;
-        }
-
-        .release-version {
-            font-size: 1.4em;
-            font-weight: bold;
-            color: #667eea;
-            margin-bottom: 10px;
-        }
-
-        .release-date {
-            color: #666;
-            font-size: 0.9em;
             margin-bottom: 20px;
+            border-left: 3px solid #1a1a1a;
         }
 
-        .download-buttons {
+        .version-number {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .version-date {
+            font-size: 0.9rem;
+            color: #999;
+            margin-top: 4px;
+        }
+
+        .buttons {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        @media (max-width: 600px) {
-            .download-buttons {
-                grid-template-columns: 1fr;
-            }
+            gap: 12px;
         }
 
         .btn {
-            display: inline-block;
-            padding: 12px 24px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 14px 24px;
             border-radius: 8px;
-            text-decoration: none;
-            text-align: center;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            cursor: pointer;
             border: none;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
         }
 
         .btn-primary {
-            background: #667eea;
+            background: #1a1a1a;
             color: white;
         }
 
         .btn-primary:hover {
-            background: #5568d3;
+            background: #333;
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
         }
 
         .btn-secondary {
-            background: #764ba2;
-            color: white;
+            background: #e8e8e8;
+            color: #1a1a1a;
         }
 
         .btn-secondary:hover {
-            background: #653a8a;
+            background: #d0d0d0;
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(118, 75, 162, 0.4);
         }
 
-        .tutorial {
-            background: #f0f4ff;
-            padding: 20px;
-            border-radius: 8px;
+        .steps {
+            counter-reset: step-counter;
+        }
+
+        .step {
+            counter-increment: step-counter;
             margin-bottom: 20px;
+            padding-left: 50px;
+            position: relative;
         }
 
-        .tutorial h3 {
-            color: #667eea;
-            margin-bottom: 15px;
+        .step::before {
+            content: counter(step-counter);
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 40px;
+            height: 40px;
+            background: #1a1a1a;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.9rem;
         }
 
-        .tutorial ol {
-            margin-left: 20px;
+        .step h4 {
+            font-size: 1rem;
+            margin-bottom: 6px;
+            font-weight: 600;
         }
 
-        .tutorial li {
-            margin-bottom: 10px;
-            line-height: 1.8;
+        .step p {
+            color: #666;
+            font-size: 0.95rem;
         }
 
-        .warning {
-            background: #fff3cd;
-            border-left: 4px solid #ffc107;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
-
-        .warning strong {
-            color: #856404;
-        }
-
-        .specs {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-top: 20px;
-        }
-
-        .spec-card {
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 8px;
+        .no-releases {
             text-align: center;
+            padding: 40px;
+            color: #999;
         }
 
-        .spec-card strong {
-            color: #667eea;
-            display: block;
-            margin-bottom: 5px;
+        .lang-selector {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 8px;
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 4px;
+            z-index: 200;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        }
+
+        .lang-btn {
+            padding: 6px 12px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #999;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .lang-btn.active {
+            background: #1a1a1a;
+            color: white;
         }
 
         footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
             text-align: center;
-            color: white;
-            margin-top: 40px;
             padding: 20px;
+            color: #999;
+            font-size: 0.9rem;
+            border-top: 1px solid #e0e0e0;
+            background: #f5f5f5;
+        }
+
+        @media (max-width: 768px) {
+            .card h1 {
+                font-size: 1.6rem;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .card {
+                padding: 24px;
+            }
+        }
+
+        /* Modal overlay */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-overlay.open {
+            display: flex;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 16px;
+            padding: 36px 32px 28px;
+            max-width: 440px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            animation: slideUp 0.25s ease;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .modal-icon {
+            font-size: 2.4rem;
+            margin-bottom: 12px;
+        }
+
+        .modal h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: #1a1a1a;
+        }
+
+        .modal p {
+            font-size: 0.95rem;
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 12px;
+        }
+
+        .modal-tip {
+            background: #fff8e1;
+            border-left: 3px solid #f59e0b;
+            border-radius: 6px;
+            padding: 12px 14px;
+            font-size: 0.9rem;
+            color: #7c5e0a;
+            margin-bottom: 24px;
+        }
+
+        .modal-actions {
+            display: grid;
+            gap: 10px;
+        }
+
+        .btn-confirm {
+            background: #1a1a1a;
+            color: white;
+        }
+
+        .btn-confirm:hover {
+            background: #333;
+            transform: translateY(-2px);
+        }
+
+        .btn-cancel {
+            background: #e8e8e8;
+            color: #1a1a1a;
+        }
+
+        .btn-cancel:hover {
+            background: #d0d0d0;
+            transform: translateY(-2px);
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>🇧🇴 Verifica tu billetito</h1>
-            <p>Verifica si un billete está en la lista de inhabilitados</p>
-        </header>
+    <header></header>
 
-        <div class="content">
-            <!-- Última versión -->
-            <section class="section">
-                <h2>📥 Descargar</h2>
-                <div class="release-box">
-                    <div class="release-version" id="latest-version">Cargando...</div>
-                    <div class="release-date" id="latest-date"></div>
-
-                    <div class="download-buttons">
-                        <a href="#" class="btn btn-primary" id="download-apk" style="display:none;">
-                            📱 Descargar APK
-                        </a>
-                        <a href="#" class="btn btn-secondary" id="download-aab" style="display:none;">
-                            📦 Descargar AAB
-                        </a>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Tutorial de instalación -->
-            <section class="section">
-                <h2>📖 Cómo instalar</h2>
-
-                <h3 style="color: #667eea; margin-top: 30px; margin-bottom: 15px;">Para Android (APK)</h3>
-                <div class="tutorial">
-                    <ol>
-                        <li><strong>Descarga el archivo APK</strong> desde el botón de arriba</li>
-                        <li><strong>Habilita instalación desde fuentes desconocidas:</strong>
-                            <ul style="margin-left: 20px; margin-top: 5px;">
-                                <li>Ve a Configuración → Seguridad</li>
-                                <li>Busca "Instalar apps desconocidas" o "Fuentes desconocidas"</li>
-                                <li>Habilita la opción para tu navegador o administrador de archivos</li>
-                            </ul>
-                        </li>
-                        <li><strong>Abre el archivo APK descargado</strong></li>
-                        <li><strong>Toca "Instalar"</strong> y espera a que finalice</li>
-                        <li><strong>¡Listo!</strong> La app aparecerá en tu menú de aplicaciones</li>
-                    </ol>
-                </div>
-
-                <h3 style="color: #667eea; margin-top: 30px; margin-bottom: 15px;">Para Google Play Store (AAB)</h3>
-                <div class="tutorial">
-                    <p>El archivo AAB es para desarrolladores. Usa el APK para instalar directamente en tu teléfono.</p>
-                </div>
-
-                <div class="warning">
-                    <strong>⚠️ Nota importante:</strong> Si ves una advertencia de "Aplicación desconocida", es normal.
-                    Nuestra app es segura y no contiene malware. Simplemente haz clic en "Instalar de todas formas".
-                </div>
-            </section>
-
-            <!-- Requisitos -->
-            <section class="section">
-                <h2>✅ Requisitos</h2>
-                <div class="specs">
-                    <div class="spec-card">
-                        <strong>Android</strong>
-                        <span>6.0 o superior</span>
-                    </div>
-                    <div class="spec-card">
-                        <strong>Espacio</strong>
-                        <span>~50 MB</span>
-                    </div>
-                    <div class="spec-card">
-                        <strong>Cámara</strong>
-                        <span>Requerida para escanear</span>
-                    </div>
-                    <div class="spec-card">
-                        <strong>Permisos</strong>
-                        <span>Cámara e Internet</span>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Solución de problemas -->
-            <section class="section">
-                <h2>❓ Solución de problemas</h2>
-
-                <div style="margin-bottom: 25px;">
-                    <h3 style="color: #667eea; margin-bottom: 10px;">La app no se instala</h3>
-                    <p>Asegúrate de que:</p>
-                    <ul style="margin-left: 20px; margin-top: 10px;">
-                        <li>Habilitaste "Instalar apps desconocidas"</li>
-                        <li>Tienes suficiente espacio en tu teléfono</li>
-                        <li>La versión de Android es 6.0 o superior</li>
-                    </ul>
-                </div>
-
-                <div style="margin-bottom: 25px;">
-                    <h3 style="color: #667eea; margin-bottom: 10px;">La cámara no funciona</h3>
-                    <p>Verifica que diste permiso de cámara a la app en:</p>
-                    <ul style="margin-left: 20px; margin-top: 10px;">
-                        <li>Configuración → Aplicaciones → Verifica tu billetito → Permisos</li>
-                        <li>Asegúrate que "Cámara" esté habilitada</li>
-                    </ul>
-                </div>
-
-                <div>
-                    <h3 style="color: #667eea; margin-bottom: 10px;">Otros problemas</h3>
-                    <p>Si tienes otro problema, puedes:</p>
-                    <ul style="margin-left: 20px; margin-top: 10px;">
-                        <li>Reiniciar tu teléfono</li>
-                        <li>Desinstalar y reinstalar la app</li>
-                        <li>Asegurarte de tener conexión a internet</li>
-                    </ul>
-                </div>
-            </section>
-        </div>
-
-        <footer>
-            <p>Verifica tu billetito © 2026 | Desarrollado con ❤️</p>
-        </footer>
+    <div class="lang-selector">
+        <button class="lang-btn active" data-lang="es">🇪🇸 ES</button>
+        <button class="lang-btn" data-lang="en">🇬🇧 EN</button>
     </div>
 
+    <div class="container">
+        <div class="grid">
+            <div class="card">
+                <h1>🇧🇴 Verifica tu billetito</h1>
+                <p data-i18n="app-desc">Verifica si un billete boliviano está en la lista de billetes inhabilitados por el Banco Central de Bolivia (BCB).</p>
+
+                <hr style="margin: 24px 0; border: none; border-top: 1px solid #e0e0e0;">
+
+                <h2 data-i18n="download-title">📥 Descargar</h2>
+                <div class="download-section">
+                    <div class="version-info">
+                        <div class="version-number" id="latest-version">Cargando...</div>
+                        <div class="version-date" id="latest-date"></div>
+                    </div>
+
+                    <div class="buttons">
+                        <a href="#" class="btn btn-primary" id="download-apk" style="display:none;">
+                            📱 APK
+                        </a>
+<button onclick="openWebAppWarning()" class="btn btn-primary">
+                            🌐 <span data-i18n="open-web-app">Abrir App Web</span>
+                        </button>
+                    </div>
+
+                    <div id="no-releases" style="display:none; margin-top: 20px;">
+                        <p style="color: #999; margin-bottom: 15px;" data-i18n="no-releases">No hay releases disponibles</p>
+                        <a href="#" class="btn btn-primary" id="github-releases" data-i18n="view-github">
+                            Ver en GitHub
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 data-i18n="install-title">📖 Cómo instalar</h2>
+                <div class="steps">
+                    <div class="step">
+                        <h4 data-i18n="step1-title">Descargar</h4>
+                        <p data-i18n="step1-desc">Haz clic en el botón APK para descargar la app</p>
+                    </div>
+                    <div class="step">
+                        <h4 data-i18n="step2-title">Permitir fuentes desconocidas</h4>
+                        <p data-i18n="step2-desc">Ve a Configuración → Seguridad y habilita "Instalar apps desconocidas"</p>
+                    </div>
+                    <div class="step">
+                        <h4 data-i18n="step3-title">Abrir archivo</h4>
+                        <p data-i18n="step3-desc">Abre el archivo APK descargado desde tu gestor de archivos</p>
+                    </div>
+                    <div class="step">
+                        <h4 data-i18n="step4-title">Instalar</h4>
+                        <p data-i18n="step4-desc">Toca "Instalar" y espera a que termine</p>
+                    </div>
+                    <div class="step">
+                        <h4 data-i18n="step5-title">¡Listo!</h4>
+                        <p data-i18n="step5-desc">La app estará en tu menú de aplicaciones</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 data-i18n="requirements-title">✅ Requisitos</h2>
+                <div style="display: grid; gap: 16px;">
+                    <div>
+                        <div style="font-weight: 600; margin-bottom: 4px;" data-i18n="android-label">Android</div>
+                        <div style="color: #666;" data-i18n="android-value">6.0 o superior</div>
+                    </div>
+                    <div>
+                        <div style="font-weight: 600; margin-bottom: 4px;" data-i18n="space-label">Espacio</div>
+                        <div style="color: #666;" data-i18n="space-value">~50 MB disponibles</div>
+                    </div>
+                    <div>
+                        <div style="font-weight: 600; margin-bottom: 4px;" data-i18n="camera-label">Cámara</div>
+                        <div style="color: #666;" data-i18n="camera-value">Requerida para escanear</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Web app warning modal -->
+    <div class="modal-overlay" id="web-modal" role="dialog" aria-modal="true">
+        <div class="modal">
+            <div class="modal-icon">⚠️</div>
+            <h3 data-i18n="modal-title">Antes de continuar</h3>
+            <p data-i18n="modal-body">El escáner de la versión web puede ser menos preciso que la app móvil, especialmente en condiciones de poca luz o con billetes muy deteriorados.</p>
+            <div class="modal-tip">
+                💡 <span data-i18n="modal-tip">La versión móvil es mejor y más confiable. Te recomendamos descargar la app APK.</span>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-confirm" onclick="confirmWebApp()" data-i18n="modal-confirm">Continuar con la versión web</button>
+                <button class="btn btn-cancel" onclick="closeWebModal()" data-i18n="modal-cancel">Descargar la app APK (recomendado)</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p data-i18n="footer-text">Verifica tu billetito © 2026</p>
+    </footer>
+
     <script>
-        // Obtener el último release desde GitHub API
+        const translations = {
+            es: {
+                'app-desc': 'Verifica si un billete boliviano está en la lista de billetes inhabilitados por el Banco Central de Bolivia (BCB).',
+                'download-title': '📥 Descargar',
+                'open-web-app': 'Abrir App Web',
+                'no-releases': 'No hay releases disponibles',
+                'view-github': 'Ver en GitHub',
+                'install-title': '📖 Cómo instalar',
+                'step1-title': 'Descargar',
+                'step1-desc': 'Haz clic en el botón APK para descargar la app',
+                'step2-title': 'Permitir fuentes desconocidas',
+                'step2-desc': 'Ve a Configuración → Seguridad y habilita "Instalar apps desconocidas"',
+                'step3-title': 'Abrir archivo',
+                'step3-desc': 'Abre el archivo APK descargado desde tu gestor de archivos',
+                'step4-title': 'Instalar',
+                'step4-desc': 'Toca "Instalar" y espera a que termine',
+                'step5-title': '¡Listo!',
+                'step5-desc': 'La app estará en tu menú de aplicaciones',
+                'requirements-title': '✅ Requisitos',
+                'android-label': 'Android',
+                'android-value': '6.0 o superior',
+                'space-label': 'Espacio',
+                'space-value': '~50 MB disponibles',
+                'camera-label': 'Cámara',
+                'camera-value': 'Requerida para escanear',
+                'footer-text': 'Verifica tu billetito © 2026',
+                'modal-title': 'Antes de continuar',
+                'modal-body': 'El escáner de la versión web puede ser menos preciso que la app móvil, especialmente en condiciones de poca luz o con billetes muy deteriorados.',
+                'modal-tip': 'La versión móvil es mejor y más confiable. Te recomendamos descargar la app APK.',
+                'modal-confirm': 'Continuar con la versión web',
+                'modal-cancel': 'Descargar la app APK (recomendado)'
+            },
+            en: {
+                'app-desc': 'Check if a Bolivian banknote is on the list of banknotes disabled by the Central Bank of Bolivia (BCB).',
+                'download-title': '📥 Download',
+                'open-web-app': 'Open Web App',
+                'no-releases': 'No releases available',
+                'view-github': 'View on GitHub',
+                'install-title': '📖 How to Install',
+                'step1-title': 'Download',
+                'step1-desc': 'Click the APK button to download the app',
+                'step2-title': 'Allow unknown sources',
+                'step2-desc': 'Go to Settings → Security and enable "Install apps from unknown sources"',
+                'step3-title': 'Open file',
+                'step3-desc': 'Open the downloaded APK file from your file manager',
+                'step4-title': 'Install',
+                'step4-desc': 'Tap "Install" and wait for it to complete',
+                'step5-title': 'Done!',
+                'step5-desc': 'The app will be in your applications menu',
+                'requirements-title': '✅ Requirements',
+                'android-label': 'Android',
+                'android-value': '6.0 or higher',
+                'space-label': 'Space',
+                'space-value': '~50 MB available',
+                'camera-label': 'Camera',
+                'camera-value': 'Required to scan',
+                'footer-text': 'Verifica tu billetito © 2026',
+                'modal-title': 'Before you continue',
+                'modal-body': 'The web scanner may be less accurate than the mobile app — especially in low-light conditions or with heavily worn banknotes.',
+                'modal-tip': 'The mobile version is better and more reliable. We recommend downloading the APK app.',
+                'modal-confirm': 'Continue with the web version',
+                'modal-cancel': 'Download the APK app (recommended)'
+            }
+        };
+
+        let currentLanguage = localStorage.getItem('language') || 'es';
+
+        function setLanguage(lang) {
+            currentLanguage = lang;
+            localStorage.setItem('language', lang);
+
+            document.documentElement.lang = lang;
+
+            // Update all translatable elements
+            Object.keys(translations[lang]).forEach(key => {
+                const elements = document.querySelectorAll(`[data-i18n="${key}"]`);
+                elements.forEach(el => {
+                    el.textContent = translations[lang][key];
+                });
+            });
+
+            // Update language selector buttons
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.lang === lang);
+            });
+
+            // Update date format
+            updateDateFormat(lang);
+        }
+
+        function updateDateFormat(lang) {
+            const dateEl = document.getElementById('latest-date');
+            if (dateEl && dateEl.dataset.timestamp) {
+                const releaseDate = new Date(dateEl.dataset.timestamp);
+                const locale = lang === 'es' ? 'es-BO' : 'en-US';
+                const dateStr = releaseDate.toLocaleDateString(locale, {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                dateEl.textContent = dateStr;
+            }
+        }
+
+        function openWebAppWarning() {
+            document.getElementById('web-modal').classList.add('open');
+        }
+
+        function closeWebModal() {
+            document.getElementById('web-modal').classList.remove('open');
+            const apkBtn = document.getElementById('download-apk');
+            if (apkBtn && apkBtn.href !== '#') {
+                apkBtn.click();
+            }
+        }
+
+        function confirmWebApp() {
+            document.getElementById('web-modal').classList.remove('open');
+            window.open('./app/', '_blank');
+        }
+
+        // Close modal when clicking the overlay background
+        document.getElementById('web-modal').addEventListener('click', function(e) {
+            if (e.target === this) closeWebModal();
+        });
+
         async function getLatestRelease() {
             try {
-                // Detectar usuario y repo desde la URL de GitHub Pages
-                // Por ejemplo: https://usuario.github.io/billcheck/
-                const pathParts = window.location.pathname.split('/').filter(Boolean);
-                let owner = 'tu-usuario';  // default
-                let repo = 'billcheck';
+                let owner = 'b4tt3rs';
+                let repo = 'verifica-tu-billetito';
 
-                // Si estás en GitHub Pages, detecta el owner desde el URL
                 if (window.location.hostname.includes('github.io')) {
                     owner = window.location.hostname.split('.')[0];
                 }
 
-                const apiUrl = `https://api.github.com/repos/${owner}/${repo}/releases/latest`;
-                console.log('Fetching from:', apiUrl);
+                const apiUrl = `https://api.github.com/repos/${owner}/${repo}/releases/tags/latest`;
 
                 const response = await fetch(apiUrl);
                 if (!response.ok) throw new Error('No releases found');
 
                 const release = await response.json();
 
-                // Actualizar versión y fecha
-                document.getElementById('latest-version').textContent = `Versión ${release.tag_name}`;
+                document.getElementById('latest-version').textContent = release.tag_name;
+                document.getElementById('latest-date').dataset.timestamp = release.published_at;
 
-                const releaseDate = new Date(release.published_at);
-                const dateStr = releaseDate.toLocaleDateString('es-BO', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit'
-                });
-                document.getElementById('latest-date').textContent = `Publicado: ${dateStr}`;
+                updateDateFormat(currentLanguage);
 
-                // Buscar archivos APK y AAB
                 const apkAsset = release.assets.find(a => a.name.includes('.apk'));
-                const aabAsset = release.assets.find(a => a.name.includes('.aab'));
 
                 if (apkAsset) {
                     const apkBtn = document.getElementById('download-apk');
                     apkBtn.href = apkAsset.browser_download_url;
-                    apkBtn.style.display = 'block';
+                    apkBtn.style.display = 'flex';
                 }
 
-                if (aabAsset) {
-                    const aabBtn = document.getElementById('download-aab');
-                    aabBtn.href = aabAsset.browser_download_url;
-                    aabBtn.style.display = 'block';
-                }
             } catch (error) {
                 console.error('Error fetching release:', error);
-                document.getElementById('latest-version').textContent = 'Error al cargar la versión';
+                document.getElementById('latest-version').textContent = currentLanguage === 'es' ? 'Sin releases' : 'No releases';
+                document.getElementById('latest-date').textContent = currentLanguage === 'es' ? 'No disponible' : 'Not available';
+                document.getElementById('no-releases').style.display = 'block';
+
+                const owner = window.location.hostname.includes('github.io')
+                    ? window.location.hostname.split('.')[0]
+                    : 'b4tt3rs';
+                document.getElementById('github-releases').href = `https://github.com/${owner}/billcheck/releases`;
             }
         }
 
-        // Cargar datos al abrir la página
+        // Set initial language
+        setLanguage(currentLanguage);
+
+        // Add event listeners to language buttons
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.addEventListener('click', () => setLanguage(btn.dataset.lang));
+        });
+
         getLatestRelease();
     </script>
 </body>

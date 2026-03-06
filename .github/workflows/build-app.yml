@@ -1,11 +1,9 @@
-name: Build Android APK & AAB
+name: Build & Deploy
 
 on:
   push:
     branches:
       - main
-    paths-ignore:
-      - 'docs/**'
   workflow_dispatch:
     inputs:
       build_type:
@@ -18,8 +16,14 @@ on:
           - aab
           - both
 
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
 jobs:
   build:
+    name: Build Web & Android
     runs-on: ubuntu-latest
 
     steps:
@@ -45,31 +49,37 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Decode and create keystore
+      - name: Build Angular (production)
+        run: npm run build
+
+      - name: Decode keystore
         env:
           KEYSTORE_BASE64: ${{ secrets.KEYSTORE }}
-        run: |
-          echo "$KEYSTORE_BASE64" | base64 -d > billcheck-release.jks
-          ls -lh billcheck-release.jks
+        run: echo "$KEYSTORE_BASE64" | base64 -d > billcheck-release.jks
 
       - name: Build and sign release artifacts
         env:
           KEYSTORE: billcheck-release.jks
           ALIAS: ${{ secrets.ALIAS }}
           PASSWORD: ${{ secrets.PASSWORD }}
+          ORG_GRADLE_PROJECT_versionCode: ${{ github.run_number }}
+          ORG_GRADLE_PROJECT_versionName: "1.${{ github.run_number }}"
         run: |
           chmod +x build-release.sh
           ./build-release.sh
 
-      - name: List build outputs
-        run: |
-          echo "=== APK outputs ==="
-          ls -lh android/app/build/outputs/apk/release/ || echo "No APK found"
-          echo "=== AAB outputs ==="
-          ls -lh android/app/build/outputs/bundle/release/ || echo "No AAB found"
+      - name: Cleanup keystore
+        if: always()
+        run: rm -f billcheck-release.jks
+
+      - name: Upload www artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-app
+          path: www/
+          retention-days: 7
 
       - name: Upload APK artifact
-        if: success()
         uses: actions/upload-artifact@v4
         with:
           name: app-release-signed.apk
@@ -77,25 +87,18 @@ jobs:
           retention-days: 30
 
       - name: Upload AAB artifact
-        if: success()
         uses: actions/upload-artifact@v4
         with:
           name: app-release.aab
           path: android/app/build/outputs/bundle/release/app-release.aab
           retention-days: 30
 
-      - name: Cleanup keystore
-        if: always()
-        run: rm -f billcheck-release.jks
-
   create-release:
+    name: Create GitHub Release
     needs: build
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
       - name: Download APK artifact
         uses: actions/download-artifact@v4
         with:
@@ -119,10 +122,59 @@ jobs:
         with:
           tag_name: ${{ steps.version.outputs.VERSION }}
           name: Release ${{ steps.version.outputs.VERSION }}
-          draft: false
-          prerelease: false
           files: |
             ./apk/app-release-signed.apk
             ./aab/app-release.aab
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update Latest Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: latest
+          name: Latest Release
+          files: |
+            ./apk/app-release-signed.apk
+            ./aab/app-release.aab
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  deploy-pages:
+    name: Deploy to GitHub Pages
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: docs
+
+      - name: Download www artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: web-app
+          path: ./www
+
+      - name: Prepare deploy folder
+        run: |
+          mkdir -p deploy
+          cp -r docs/* deploy/
+          mkdir -p deploy/app
+          cp -r www/* deploy/app/
+          sed -i 's|<base href="/">|<base href="/verifica-tu-billetito/app/">|' deploy/app/index.html
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload to GitHub Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./deploy
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

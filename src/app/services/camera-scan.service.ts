@@ -1,5 +1,8 @@
 import { Injectable } from '@angular/core';
-import { CapacitorPluginMlKitTextRecognition as MlKit } from '@pantrist/capacitor-plugin-ml-kit-text-recognition';
+import { Capacitor } from '@capacitor/core';
+import { OcrStrategy } from './ocr/ocr-strategy';
+import { MlKitOcrStrategy } from './ocr/mlkit-ocr.strategy';
+import { TesseractOcrStrategy } from './ocr/tesseract-ocr.strategy';
 import { ScanResult } from '../models/bill.model';
 import {
   SCAN_INTERVAL_MS,
@@ -17,6 +20,13 @@ import {
 export class CameraScanService {
   private streamRef: MediaStream | null = null;
   private scanIntervalRef: ReturnType<typeof setInterval> | null = null;
+  private ocr: OcrStrategy;
+
+  constructor() {
+    this.ocr = Capacitor.isNativePlatform()
+      ? new MlKitOcrStrategy()
+      : new TesseractOcrStrategy();
+  }
 
   async startCamera(videoEl: HTMLVideoElement, onFrame: () => void): Promise<void> {
     const stream = await navigator.mediaDevices.getUserMedia({
@@ -46,7 +56,7 @@ export class CameraScanService {
     canvas.getContext('2d')!.drawImage(videoEl, 0, 0, canvas.width, canvas.height);
     const base64 = canvas.toDataURL(IMAGE_FORMAT, JPEG_QUALITY).split(',')[1];
 
-    const { text, blocks } = await MlKit.detectText({ base64Image: base64 });
+    const { text, blocks } = await this.ocr.recognize(base64);
 
     const denomination = this.detectDenomination(text, blocks);
     const { serial, series } = this.extractSerial(text);
