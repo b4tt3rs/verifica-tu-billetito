@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verifica tu billetito - Descargar</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            padding: 40px 20px;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .content {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        .section {
+            padding: 40px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .section:last-child {
+            border-bottom: none;
+        }
+
+        h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+
+        .release-box {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+
+        .release-version {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .release-date {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 20px;
+        }
+
+        .download-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 600px) {
+            .download-buttons {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            text-align: center;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #764ba2;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #653a8a;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(118, 75, 162, 0.4);
+        }
+
+        .tutorial {
+            background: #f0f4ff;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .tutorial h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .tutorial ol {
+            margin-left: 20px;
+        }
+
+        .tutorial li {
+            margin-bottom: 10px;
+            line-height: 1.8;
+        }
+
+        .warning {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .warning strong {
+            color: #856404;
+        }
+
+        .specs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .spec-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .spec-card strong {
+            color: #667eea;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        footer {
+            text-align: center;
+            color: white;
+            margin-top: 40px;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🇧🇴 Verifica tu billetito</h1>
+            <p>Verifica si un billete está en la lista de inhabilitados</p>
+        </header>
+
+        <div class="content">
+            <!-- Última versión -->
+            <section class="section">
+                <h2>📥 Descargar</h2>
+                <div class="release-box">
+                    <div class="release-version" id="latest-version">Cargando...</div>
+                    <div class="release-date" id="latest-date"></div>
+
+                    <div class="download-buttons">
+                        <a href="#" class="btn btn-primary" id="download-apk" style="display:none;">
+                            📱 Descargar APK
+                        </a>
+                        <a href="#" class="btn btn-secondary" id="download-aab" style="display:none;">
+                            📦 Descargar AAB
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tutorial de instalación -->
+            <section class="section">
+                <h2>📖 Cómo instalar</h2>
+
+                <h3 style="color: #667eea; margin-top: 30px; margin-bottom: 15px;">Para Android (APK)</h3>
+                <div class="tutorial">
+                    <ol>
+                        <li><strong>Descarga el archivo APK</strong> desde el botón de arriba</li>
+                        <li><strong>Habilita instalación desde fuentes desconocidas:</strong>
+                            <ul style="margin-left: 20px; margin-top: 5px;">
+                                <li>Ve a Configuración → Seguridad</li>
+                                <li>Busca "Instalar apps desconocidas" o "Fuentes desconocidas"</li>
+                                <li>Habilita la opción para tu navegador o administrador de archivos</li>
+                            </ul>
+                        </li>
+                        <li><strong>Abre el archivo APK descargado</strong></li>
+                        <li><strong>Toca "Instalar"</strong> y espera a que finalice</li>
+                        <li><strong>¡Listo!</strong> La app aparecerá en tu menú de aplicaciones</li>
+                    </ol>
+                </div>
+
+                <h3 style="color: #667eea; margin-top: 30px; margin-bottom: 15px;">Para Google Play Store (AAB)</h3>
+                <div class="tutorial">
+                    <p>El archivo AAB es para desarrolladores. Usa el APK para instalar directamente en tu teléfono.</p>
+                </div>
+
+                <div class="warning">
+                    <strong>⚠️ Nota importante:</strong> Si ves una advertencia de "Aplicación desconocida", es normal.
+                    Nuestra app es segura y no contiene malware. Simplemente haz clic en "Instalar de todas formas".
+                </div>
+            </section>
+
+            <!-- Requisitos -->
+            <section class="section">
+                <h2>✅ Requisitos</h2>
+                <div class="specs">
+                    <div class="spec-card">
+                        <strong>Android</strong>
+                        <span>6.0 o superior</span>
+                    </div>
+                    <div class="spec-card">
+                        <strong>Espacio</strong>
+                        <span>~50 MB</span>
+                    </div>
+                    <div class="spec-card">
+                        <strong>Cámara</strong>
+                        <span>Requerida para escanear</span>
+                    </div>
+                    <div class="spec-card">
+                        <strong>Permisos</strong>
+                        <span>Cámara e Internet</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Solución de problemas -->
+            <section class="section">
+                <h2>❓ Solución de problemas</h2>
+
+                <div style="margin-bottom: 25px;">
+                    <h3 style="color: #667eea; margin-bottom: 10px;">La app no se instala</h3>
+                    <p>Asegúrate de que:</p>
+                    <ul style="margin-left: 20px; margin-top: 10px;">
+                        <li>Habilitaste "Instalar apps desconocidas"</li>
+                        <li>Tienes suficiente espacio en tu teléfono</li>
+                        <li>La versión de Android es 6.0 o superior</li>
+                    </ul>
+                </div>
+
+                <div style="margin-bottom: 25px;">
+                    <h3 style="color: #667eea; margin-bottom: 10px;">La cámara no funciona</h3>
+                    <p>Verifica que diste permiso de cámara a la app en:</p>
+                    <ul style="margin-left: 20px; margin-top: 10px;">
+                        <li>Configuración → Aplicaciones → Verifica tu billetito → Permisos</li>
+                        <li>Asegúrate que "Cámara" esté habilitada</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 style="color: #667eea; margin-bottom: 10px;">Otros problemas</h3>
+                    <p>Si tienes otro problema, puedes:</p>
+                    <ul style="margin-left: 20px; margin-top: 10px;">
+                        <li>Reiniciar tu teléfono</li>
+                        <li>Desinstalar y reinstalar la app</li>
+                        <li>Asegurarte de tener conexión a internet</li>
+                    </ul>
+                </div>
+            </section>
+        </div>
+
+        <footer>
+            <p>Verifica tu billetito © 2026 | Desarrollado con ❤️</p>
+        </footer>
+    </div>
+
+    <script>
+        // Obtener el último release desde GitHub API
+        async function getLatestRelease() {
+            try {
+                // Detectar usuario y repo desde la URL de GitHub Pages
+                // Por ejemplo: https://usuario.github.io/billcheck/
+                const pathParts = window.location.pathname.split('/').filter(Boolean);
+                let owner = 'tu-usuario';  // default
+                let repo = 'billcheck';
+
+                // Si estás en GitHub Pages, detecta el owner desde el URL
+                if (window.location.hostname.includes('github.io')) {
+                    owner = window.location.hostname.split('.')[0];
+                }
+
+                const apiUrl = `https://api.github.com/repos/${owner}/${repo}/releases/latest`;
+                console.log('Fetching from:', apiUrl);
+
+                const response = await fetch(apiUrl);
+                if (!response.ok) throw new Error('No releases found');
+
+                const release = await response.json();
+
+                // Actualizar versión y fecha
+                document.getElementById('latest-version').textContent = `Versión ${release.tag_name}`;
+
+                const releaseDate = new Date(release.published_at);
+                const dateStr = releaseDate.toLocaleDateString('es-BO', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                document.getElementById('latest-date').textContent = `Publicado: ${dateStr}`;
+
+                // Buscar archivos APK y AAB
+                const apkAsset = release.assets.find(a => a.name.includes('.apk'));
+                const aabAsset = release.assets.find(a => a.name.includes('.aab'));
+
+                if (apkAsset) {
+                    const apkBtn = document.getElementById('download-apk');
+                    apkBtn.href = apkAsset.browser_download_url;
+                    apkBtn.style.display = 'block';
+                }
+
+                if (aabAsset) {
+                    const aabBtn = document.getElementById('download-aab');
+                    aabBtn.href = aabAsset.browser_download_url;
+                    aabBtn.style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Error fetching release:', error);
+                document.getElementById('latest-version').textContent = 'Error al cargar la versión';
+            }
+        }
+
+        // Cargar datos al abrir la página
+        getLatestRelease();
+    </script>
+</body>
+</html>
