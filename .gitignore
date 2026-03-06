@@ -22,6 +22,7 @@ log.txt
 /www
 /platforms
 /plugins
+/docs/app
 
 # Compiled output
 /dist
