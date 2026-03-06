@@ -6,7 +6,7 @@ Ionic/Angular application to verify if a Bolivian banknote is on the list of ban
 
 ## 📋 Requirements
 
-- **Node.js** 18+ ([download](https://nodejs.org/))
+- **Node.js** 22 LTS ([download](https://nodejs.org/))
 - **Java JDK** 17+ ([download](https://www.oracle.com/java/technologies/downloads/))
 - **Android SDK** with API 34+ ([more info](https://developer.android.com/studio))
 - **Gradle** 8.0+ (included in Android Studio)

@@ -6,7 +6,7 @@ Aplicación Ionic/Angular para verificar si un billete boliviano está en la lis
 
 ## 📋 Requisitos
 
-- **Node.js** 18+ ([descargar](https://nodejs.org/))
+- **Node.js** 22 LTS ([descargar](https://nodejs.org/))
 - **Java JDK** 17+ ([descargar](https://www.oracle.com/java/technologies/downloads/))
 - **Android SDK** con API 34+ ([más info](https://developer.android.com/studio))
 - **Gradle** 8.0+ (incluido en Android Studio)
