@@ -139,3 +139,15 @@ jobs:
             ./aab/app-release.aab
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Copy web app to docs/app
+        run: |
+          mkdir -p docs/app
+          cp -r www/* docs/app/
+          echo "✓ Web app copied to docs/app/"
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs
