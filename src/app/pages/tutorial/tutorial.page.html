@@ -1,0 +1,79 @@
+<ion-content [fullscreen]="true" class="tutorial-content">
+
+  <button class="btn-close" (click)="close()">
+    <ion-icon name="close-outline"></ion-icon>
+  </button>
+
+  <div class="tutorial-scene" [style.background]="steps[step].gradient">
+
+    @for (s of steps; track $index) {
+      @if ($index === step) {
+        <div class="speech-bubble">
+          <p>{{ s.bubble }}</p>
+        </div>
+      }
+    }
+
+    <div [class]="'character ' + steps[step].charPose">
+      <div class="char-hair"></div>
+      <div class="char-head">
+        <div class="char-eye char-eye--l"></div>
+        <div class="char-eye char-eye--r"></div>
+        <div class="char-smile"></div>
+      </div>
+      <div class="char-body">
+        <div class="char-arm char-arm--l">
+          <div class="char-hand"></div>
+        </div>
+        <div class="char-arm char-arm--r">
+          <div class="char-hand"></div>
+        </div>
+      </div>
+      <div class="char-legs">
+        <div class="char-leg"></div>
+        <div class="char-leg"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="tutorial-body">
+
+    <div class="tutorial-dots">
+      @for (s of steps; track $index) {
+        <span class="tutorial-dot" [class.active]="$index === step"></span>
+      }
+    </div>
+
+    @for (s of steps; track $index) {
+      @if ($index === step) {
+        <div class="tutorial-step-content">
+          <h2 class="tutorial-title">{{ s.title }}</h2>
+          <p class="tutorial-text">{{ s.text }}</p>
+        </div>
+      }
+    }
+
+    <div class="tutorial-nav">
+      @if (step > 0) {
+        <button class="btn-prev" (click)="prev()">
+          <ion-icon name="chevron-back-outline"></ion-icon>
+          {{ nav.prev }}
+        </button>
+      } @else {
+        <button class="btn-skip" (click)="close()">{{ nav.skip }}</button>
+      }
+
+      <button class="btn-next" (click)="next()">
+        {{ step === steps.length - 1 ? nav.done : nav.next }}
+        @if (step < steps.length - 1) {
+          <ion-icon name="chevron-forward-outline"></ion-icon>
+        } @else {
+          <ion-icon name="checkmark-circle"></ion-icon>
+        }
+      </button>
+    </div>
+
+  </div>
+
+</ion-content>

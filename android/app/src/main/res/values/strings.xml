@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Verifica tu billetito</string>
+    <string name="title_activity_main">Verifica tu billetito</string>
+    <string name="package_name">com.billcheck.app</string>
+    <string name="custom_url_scheme">com.billcheck.app</string>
+</resources>

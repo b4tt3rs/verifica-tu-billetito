@@ -1,0 +1,206 @@
+<ion-content [fullscreen]="true" class="main-content">
+
+  <div class="app-header">
+    <div class="color-band">
+      <span class="teal"></span>
+      <span class="amber"></span>
+      <span class="crimson"></span>
+    </div>
+    <div class="hero">
+      <div class="logo-mark">
+        <ion-icon name="cash-outline"></ion-icon>
+      </div>
+      <div class="hero-text">
+        <h1>{{ strings.header.title }}</h1>
+        <p>{{ strings.header.subtitle }}</p>
+      </div>
+      <a class="btn-help" routerLink="/tutorial" [title]="strings.header.helpTitle">
+        <ion-icon name="help-circle-outline"></ion-icon>
+      </a>
+    </div>
+  </div>
+
+  <div class="page-wrapper">
+
+    <button class="scan-card" (click)="startLiveScan()">
+      <div class="scan-icon-wrap">
+        <span class="scan-ring ring-1"></span>
+        <span class="scan-ring ring-2"></span>
+        <div class="scan-icon-inner">
+          <ion-icon name="camera-outline"></ion-icon>
+        </div>
+      </div>
+      <div class="scan-card-info">
+        <p class="scan-card-title">{{ strings.scan.title }}</p>
+        <p class="scan-card-sub">{{ strings.scan.subtitle }}</p>
+      </div>
+    </button>
+
+    <div class="section-divider">
+      <span>{{ strings.manual.divider }}</span>
+    </div>
+
+    <div class="denominations">
+      <p class="section-label">{{ strings.manual.denominationLabel }}</p>
+      <div class="bill-row">
+        @for (bill of denominationsSmall; track bill.value) {
+          <button
+            [class]="'bill-btn ' + bill.cssClass"
+            [class.selected]="selectedDenomination === bill.value"
+            (click)="selectDenomination(bill.value)"
+          >
+            <div class="bill-top">
+              <span class="bill-bs">{{ strings.manual.billBs }}</span>
+              <span class="bill-amount">{{ bill.value }}</span>
+            </div>
+            <span class="bill-bottom">{{ strings.manual.billBcb }}</span>
+          </button>
+        }
+      </div>
+      <div class="bill-row bill-row--large">
+        @for (bill of denominationsLarge; track bill.value) {
+          <button
+            [class]="'bill-btn ' + bill.cssClass"
+            [class.selected]="selectedDenomination === bill.value"
+            (click)="selectDenomination(bill.value)"
+          >
+            <div class="bill-top">
+              <span class="bill-bs">{{ strings.manual.billBs }}</span>
+              <span class="bill-amount">{{ bill.value }}</span>
+            </div>
+            <span class="bill-bottom">{{ strings.manual.billBcb }}</span>
+          </button>
+        }
+      </div>
+    </div>
+
+    <div class="verify-card">
+
+      <p class="card-hint">
+        <ion-icon name="information-circle-outline"></ion-icon>
+        {{ strings.manual.hintText }}
+      </p>
+
+      <div class="field-group">
+        <span class="field-label">{{ strings.manual.serialLabel }}</span>
+        <div class="input-row">
+          <ion-icon name="barcode-outline" class="icon-prefix"></ion-icon>
+          <input
+            class="serial-input"
+            type="text"
+            [placeholder]="strings.manual.serialPlaceholder"
+            [ngModel]="serialNumber"
+            (ngModelChange)="onSerialChange($event)"
+            [maxlength]="serialMaxLength"
+            autocomplete="off"
+            inputmode="numeric"
+            pattern="[0-9]*"
+          />
+        </div>
+        <p class="field-help">{{ strings.manual.serialHelp }}</p>
+      </div>
+
+      <div class="field-group">
+        <span class="field-label">{{ strings.manual.seriesLabel }}</span>
+        <div class="input-row">
+          <ion-icon name="barcode-outline" class="icon-prefix"></ion-icon>
+          <input
+            class="serial-input"
+            type="text"
+            [placeholder]="strings.manual.seriesPlaceholder"
+            [ngModel]="seriesLetter"
+            (ngModelChange)="onLetterChange($event)"
+            [maxlength]="seriesMaxLength"
+            autocomplete="off"
+            spellcheck="false"
+          />
+        </div>
+        <p class="field-help">{{ strings.manual.seriesHelp }}</p>
+      </div>
+
+      <button class="btn-verify" (click)="verify()" [disabled]="!serialNumber || scanning">
+        <ion-icon name="search-outline"></ion-icon>
+        {{ strings.buttons.verify }}
+      </button>
+      <button class="btn-clear" (click)="clear()" [disabled]="!serialNumber && !seriesLetter && !selectedDenomination">
+        <ion-icon name="refresh-outline"></ion-icon>
+        {{ strings.buttons.clear }}
+      </button>
+
+    </div>
+
+    @if (alertModal) {
+      <div class="alert-backdrop">
+        <div class="alert-modal">
+          <div class="alert-top">
+            <div class="alert-icon-wrap">
+              <ion-icon name="alert-circle"></ion-icon>
+            </div>
+            <div class="alert-body">
+              <h3>{{ alertModal.header }}</h3>
+              <p>{{ alertModal.message }}</p>
+            </div>
+          </div>
+          <div class="alert-footer">
+            <button class="alert-btn-ok" (click)="dismissAlert()">{{ strings.buttons.ok }}</button>
+          </div>
+        </div>
+      </div>
+    }
+
+    @if (result) {
+      <div class="alert-backdrop">
+        <div class="result-card"
+          [class.result-valid]="result.status === status.noObservado"
+          [class.result-observed]="result.status === status.observado"
+          [class.result-invalid]="result.status === status.formatoInvalido">
+
+          <div class="result-top">
+            <div class="result-icon-wrap">
+              <ion-icon [name]="result.status === status.noObservado ? strings.icons.resultOk
+                              : result.status === status.observado   ? strings.icons.resultObserved
+                              : strings.icons.resultInvalid"></ion-icon>
+            </div>
+            <div class="result-body">
+              <h3>{{ result.title }}</h3>
+              <p>{{ result.message }}</p>
+            </div>
+          </div>
+
+          <div class="result-footer">
+            <span class="serial-badge">
+              <ion-icon name="barcode-outline"></ion-icon>
+              {{ result.serial }}{{ result.seriesLetter ? ' ' + result.seriesLetter : '' }}
+            </span>
+            <button class="btn-reset" (click)="dismissResult()">
+              <ion-icon name="close-outline"></ion-icon>
+              {{ strings.buttons.ok }}
+            </button>
+          </div>
+
+        </div>
+      </div>
+    }
+
+  </div>
+
+  @if (liveScanning) {
+    <div class="live-scan-overlay">
+      <video #scanVideo autoplay playsinline muted></video>
+      <div class="scan-hint">
+        <ion-icon name="scan-outline"></ion-icon>
+        {{ strings.scan.hint }}
+      </div>
+      <div class="scan-controls">
+        <button class="scan-btn-cancel" (click)="stopLiveScan()">
+          <ion-icon name="close-outline"></ion-icon>
+          {{ strings.buttons.cancel }}
+        </button>
+        <button class="scan-btn-capture" (click)="captureAndProcess(true)" [disabled]="processing" [title]="strings.buttons.captureTitle">
+          <ion-icon name="camera-outline"></ion-icon>
+        </button>
+      </div>
+    </div>
+  }
+
+</ion-content>
