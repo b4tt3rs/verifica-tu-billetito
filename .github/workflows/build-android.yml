@@ -114,11 +114,24 @@ jobs:
           VERSION="v$(date +'%Y.%m.%d-%H%M%S')"
           echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
 
-      - name: Create Release
+      - name: Create Release (Versión específica)
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ steps.version.outputs.VERSION }}
           name: Release ${{ steps.version.outputs.VERSION }}
+          draft: false
+          prerelease: false
+          files: |
+            ./apk/app-release-signed.apk
+            ./aab/app-release.aab
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create/Update Latest Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: latest
+          name: Latest Release
           draft: false
           prerelease: false
           files: |
