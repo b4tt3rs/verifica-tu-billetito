@@ -1,0 +1,86 @@
+name: Build Android APK & AAB
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  workflow_dispatch:
+    inputs:
+      build_type:
+        description: 'What to build'
+        required: true
+        default: 'both'
+        type: choice
+        options:
+          - apk
+          - aab
+          - both
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'gradle'
+
+      - name: Setup Node.js 18
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Decode and create keystore
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE }}
+        run: |
+          echo "$KEYSTORE_BASE64" | base64 -d > billcheck-release.jks
+          ls -lh billcheck-release.jks
+
+      - name: Build and sign release artifacts
+        env:
+          KEYSTORE: billcheck-release.jks
+          ALIAS: ${{ secrets.ALIAS }}
+          PASSWORD: ${{ secrets.PASSWORD }}
+          ANDROID_SDK_ROOT: ${{ env.ANDROID_SDK_ROOT }}
+        run: |
+          chmod +x build-release.sh
+          ./build-release.sh
+
+      - name: List build outputs
+        run: |
+          echo "=== APK outputs ==="
+          ls -lh android/app/build/outputs/apk/release/ || echo "No APK found"
+          echo "=== AAB outputs ==="
+          ls -lh android/app/build/outputs/bundle/release/ || echo "No AAB found"
+
+      - name: Upload APK artifact
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release-signed.apk
+          path: android/app/build/outputs/apk/release/app-release-signed.apk
+          retention-days: 30
+
+      - name: Upload AAB artifact
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release.aab
+          path: android/app/build/outputs/bundle/release/app-release.aab
+          retention-days: 30
+
+      - name: Cleanup keystore
+        if: always()
+        run: rm -f billcheck-release.jks

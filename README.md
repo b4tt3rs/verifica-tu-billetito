@@ -48,29 +48,33 @@ Open http://localhost:4200 in your browser. The app will automatically reload wh
 ng build
 ```
 
-## 📱 Build APK for Android
+## 📱 Build for Android
 
-### Option 1: Automated Script (Recommended)
+### Automated Release Build
+
+Build and sign APK and Android App Bundle for production (Play Store):
 
 **Linux/macOS:**
 ```bash
-./build-apk.sh
+./build-release.sh
 ```
 
 **Windows:**
 ```cmd
-build-apk.bat
+build-release.bat
 ```
 
 The script automatically:
 1. Compiles Angular in production mode
 2. Syncs Capacitor with Android
-3. Compiles the APK with Gradle
-4. Signs the APK with the keystore
+3. Compiles APK and AAB with Gradle
+4. Signs both artifacts with the keystore
 
-**Result:** `android/app/build/outputs/apk/release/app-release-signed.apk`
+**Results:**
+- `android/app/build/outputs/apk/release/app-release-signed.apk`
+- `android/app/build/outputs/bundle/release/app-release.aab`
 
-### Option 2: Manual Steps
+### Manual Steps
 
 ```bash
 # 1. Compile Angular
@@ -147,7 +151,7 @@ billcheck/
 ├── package.json            # Dependencies
 ├── angular.json            # Angular configuration
 ├── tsconfig.json           # TypeScript configuration
-├── build-apk.sh            # APK build script (Linux/macOS)
-├── build-apk.bat           # APK build script (Windows)
+├── build-release.sh        # Release build script (Linux/macOS)
+├── build-release.bat       # Release build script (Windows)
 └── billcheck-release.jks   # Keystore (DO NOT upload to Git ⚠️)
 ```
