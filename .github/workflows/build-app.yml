@@ -84,12 +84,19 @@ jobs:
           path: android/app/build/outputs/bundle/release/app-release.aab
           retention-days: 30
 
+      - name: Verify Angular build output
+        run: |
+          echo "=== Contents of www/ ==="
+          ls -la www/ 2>/dev/null || echo "ERROR: www/ directory not found!"
+          echo ""
+
       - name: Copy web app to docs/app
         run: |
           mkdir -p docs/app
-          cp -r www/* docs/app/ 2>/dev/null || true
-          ls -lh docs/app/ || echo "No files in docs/app"
-          echo "✓ Web app copied"
+          cp -r www/* docs/app/
+          echo "=== Contents of docs/app/ ==="
+          ls -la docs/app/
+          echo "✓ Web app copied successfully"
 
       - name: Upload docs artifact
         uses: actions/upload-artifact@v4
