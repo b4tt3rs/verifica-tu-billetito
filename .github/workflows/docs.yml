@@ -1,11 +1,12 @@
-name: Deploy GitHub Pages
+name: Deploy Landing Page
 
 on:
   push:
     branches:
       - main
     paths:
-      - 'docs/**'
+      - 'docs/index.html'
+      - 'docs/README.md'
   workflow_dispatch:
 
 permissions:
