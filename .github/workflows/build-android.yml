@@ -25,12 +25,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Java 21
+      - name: Setup Java 17
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: '21'
+          java-version: '17'
           cache: 'gradle'
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
 
       - name: Setup Node.js 22
         uses: actions/setup-node@v4
@@ -53,7 +56,6 @@ jobs:
           KEYSTORE: billcheck-release.jks
           ALIAS: ${{ secrets.ALIAS }}
           PASSWORD: ${{ secrets.PASSWORD }}
-          ANDROID_SDK_ROOT: ${{ env.ANDROID_SDK_ROOT }}
         run: |
           chmod +x build-release.sh
           ./build-release.sh
