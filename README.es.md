@@ -110,7 +110,7 @@ keytool -genkey -v -keystore billcheck-release.jks \
 ```
 
 **Parámetros:**
-- `-alias billcheck` - Nombre del alias (debe coincidir en `build-apk.sh`)
+- `-alias billcheck` - Nombre del alias (debe coincidir en `build-release.sh`)
 - `-storepass billcheck2026` - Contraseña de la keystore
 - `-keypass billcheck2026` - Contraseña de la clave privada
 - `-validity 10000` - Días de validez (~27 años)
@@ -122,7 +122,7 @@ keytool -genkey -v -keystore billcheck-release.jks \
 keytool -list -v -keystore billcheck-release.jks -storepass billcheck2026
 ```
 
-### ⚠️ Configuración en build-apk.sh
+### ⚠️ Configuración en build-release.sh
 
 El script usa estos valores. Si cambiaste la contraseña o alias, actualiza:
 
