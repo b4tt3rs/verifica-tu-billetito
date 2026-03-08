@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%"   stop-color="#0D5C3D"/>
+      <stop offset="100%" stop-color="#1DB869"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="32" height="32" rx="7" fill="url(#bg)"/>
+
+  <!-- Bill body -->
+  <rect x="4" y="10" width="24" height="13" rx="2.5" fill="white"/>
+
+  <!-- Corner bars top-left -->
+  <rect x="5.5" y="12"   width="5" height="1.5" rx="0.7" fill="#178558"/>
+  <rect x="5.5" y="14.5" width="5" height="1.5" rx="0.7" fill="#178558"/>
+  <!-- Corner bars top-right -->
+  <rect x="21.5" y="12"   width="5" height="1.5" rx="0.7" fill="#178558"/>
+  <rect x="21.5" y="14.5" width="5" height="1.5" rx="0.7" fill="#178558"/>
+  <!-- Corner bars bottom-left -->
+  <rect x="5.5" y="19"   width="5" height="1.5" rx="0.7" fill="#178558"/>
+  <rect x="5.5" y="21"   width="5" height="1.5" rx="0.7" fill="#178558"/>
+  <!-- Corner bars bottom-right -->
+  <rect x="21.5" y="19"   width="5" height="1.5" rx="0.7" fill="#178558"/>
+  <rect x="21.5" y="21"   width="5" height="1.5" rx="0.7" fill="#178558"/>
+
+  <!-- Bold checkmark -->
+  <path d="M10.5 16.5 L14.5 20.5 L22 12"
+        fill="none" stroke="#178558" stroke-width="2.5"
+        stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
