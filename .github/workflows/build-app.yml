@@ -88,17 +88,11 @@ jobs:
           ls -la www/ 2>/dev/null || echo "ERROR: www/ directory not found!"
           echo ""
 
-      - name: Copy web app to docs/app
-        run: |
-          mkdir -p docs/app
-          cp -r www/* docs/app/
-          echo "✓ Web app copied to docs/app/"
-
-      - name: Upload docs artifact
+      - name: Upload web app artifact
         uses: actions/upload-artifact@v4
         with:
-          name: docs-folder
-          path: docs/
+          name: web-app
+          path: www/
           retention-days: 7
 
       - name: Cleanup keystore
@@ -162,34 +156,22 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Download docs artifact
+      - name: Download web app artifact
         uses: actions/download-artifact@v4
         with:
-          name: docs-folder
+          name: web-app
           path: ./deploy-dir
 
-      - name: Verify downloaded structure
+      - name: Verify web app structure
         run: |
           echo "=== Contents of deploy-dir ==="
           ls -la ./deploy-dir/
           echo ""
-          echo "=== Full tree ==="
-          find ./deploy-dir -type f | head -30
-          echo ""
-          echo "=== Critical checks ==="
+          echo "=== Checking index.html ==="
           if [ -f "./deploy-dir/index.html" ]; then
-            echo "✓ index.html (landing page) found at root"
+            echo "✓ index.html found"
           else
-            echo "✗ ERROR: index.html NOT found at deploy-dir root!"
-          fi
-          if [ -d "./deploy-dir/app" ]; then
-            echo "✓ app/ folder found"
-            if [ -f "./deploy-dir/app/index.html" ]; then
-              echo "✓ app/index.html found"
-            fi
-            ls -la ./deploy-dir/app/ | head -10
-          else
-            echo "✗ ERROR: app/ folder NOT found in deploy-dir!"
+            echo "✗ ERROR: index.html NOT found!"
           fi
 
       - name: Deploy to GitHub Pages
