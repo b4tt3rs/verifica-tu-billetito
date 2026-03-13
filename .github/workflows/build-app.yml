@@ -62,6 +62,8 @@ jobs:
           KEYSTORE: billcheck-release.jks
           ALIAS: ${{ secrets.ALIAS }}
           PASSWORD: ${{ secrets.PASSWORD }}
+          ORG_GRADLE_PROJECT_versionCode: ${{ github.run_number }}
+          ORG_GRADLE_PROJECT_versionName: "1.${{ github.run_number }}"
         run: |
           chmod +x build-release.sh
           ./build-release.sh
