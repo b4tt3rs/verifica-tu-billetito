@@ -16,48 +16,14 @@ on:
           - aab
           - both
 
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
 jobs:
-  build-web:
-    name: Build Web App
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js 22
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Build Angular (production)
-        run: npm run build
-
-      - name: Copy web app to docs/app
-        run: |
-          mkdir -p docs/app
-          cp -r www/* docs/app/
-
-      - name: Upload web app artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: web-app
-          path: www/
-          retention-days: 7
-
-      - name: Upload docs artifact (for GitHub Pages)
-        uses: actions/upload-artifact@v4
-        with:
-          name: docs-folder
-          path: docs/
-          retention-days: 7
-
-  build-android:
-    name: Build Android Artifacts
+  build:
+    name: Build Web & Android
     runs-on: ubuntu-latest
 
     steps:
@@ -83,11 +49,13 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Build Angular (production)
+        run: npm run build
+
       - name: Decode keystore
         env:
           KEYSTORE_BASE64: ${{ secrets.KEYSTORE }}
-        run: |
-          echo "$KEYSTORE_BASE64" | base64 -d > billcheck-release.jks
+        run: echo "$KEYSTORE_BASE64" | base64 -d > billcheck-release.jks
 
       - name: Build and sign release artifacts
         env:
@@ -98,8 +66,18 @@ jobs:
           chmod +x build-release.sh
           ./build-release.sh
 
+      - name: Cleanup keystore
+        if: always()
+        run: rm -f billcheck-release.jks
+
+      - name: Upload www artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-app
+          path: www/
+          retention-days: 7
+
       - name: Upload APK artifact
-        if: success()
         uses: actions/upload-artifact@v4
         with:
           name: app-release-signed.apk
@@ -107,26 +85,18 @@ jobs:
           retention-days: 30
 
       - name: Upload AAB artifact
-        if: success()
         uses: actions/upload-artifact@v4
         with:
           name: app-release.aab
           path: android/app/build/outputs/bundle/release/app-release.aab
           retention-days: 30
 
-      - name: Cleanup keystore
-        if: always()
-        run: rm -f billcheck-release.jks
-
   create-release:
     name: Create GitHub Release
-    needs: build-android
+    needs: build
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
       - name: Download APK artifact
         uses: actions/download-artifact@v4
         with:
@@ -169,19 +139,27 @@ jobs:
 
   deploy-pages:
     name: Deploy to GitHub Pages
-    needs: build-web
+    needs: build
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
-      - name: Download docs artifact
+      - name: Download www artifact
         uses: actions/download-artifact@v4
         with:
-          name: docs-folder
-          path: ./deploy-dir
+          name: web-app
+          path: ./www
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload to GitHub Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./www
 
       - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./deploy-dir
-          cname: false
+        id: deployment
+        uses: actions/deploy-pages@v4
