@@ -3,6 +3,7 @@ import { Capacitor } from '@capacitor/core';
 import { OcrStrategy } from './ocr/ocr-strategy';
 import { MlKitOcrStrategy } from './ocr/mlkit-ocr.strategy';
 import { TesseractOcrStrategy } from './ocr/tesseract-ocr.strategy';
+import { TextDetectorOcrStrategy } from './ocr/text-detector-ocr.strategy';
 import { ScanResult } from '../models/bill.model';
 import {
   SCAN_INTERVAL_MS,
@@ -23,9 +24,13 @@ export class CameraScanService {
   private ocr: OcrStrategy;
 
   constructor() {
-    this.ocr = Capacitor.isNativePlatform()
-      ? new MlKitOcrStrategy()
-      : new TesseractOcrStrategy();
+    if (Capacitor.isNativePlatform()) {
+      this.ocr = new MlKitOcrStrategy();
+    } else if (TextDetectorOcrStrategy.isSupported()) {
+      this.ocr = new TextDetectorOcrStrategy();
+    } else {
+      this.ocr = new TesseractOcrStrategy();
+    }
   }
 
   async startCamera(videoEl: HTMLVideoElement, onFrame: () => void): Promise<void> {
