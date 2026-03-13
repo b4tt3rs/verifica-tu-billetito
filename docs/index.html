@@ -351,10 +351,7 @@
                         <a href="#" class="btn btn-primary" id="download-apk" style="display:none;">
                             📱 APK
                         </a>
-                        <a href="#" class="btn btn-secondary" id="download-aab" style="display:none;">
-                            📦 AAB
-                        </a>
-                        <button onclick="openWebAppWarning()" class="btn btn-primary">
+<button onclick="openWebAppWarning()" class="btn btn-primary">
                             🌐 <span data-i18n="open-web-app">Abrir App Web</span>
                         </button>
                     </div>
@@ -585,18 +582,11 @@
                 updateDateFormat(currentLanguage);
 
                 const apkAsset = release.assets.find(a => a.name.includes('.apk'));
-                const aabAsset = release.assets.find(a => a.name.includes('.aab'));
 
                 if (apkAsset) {
                     const apkBtn = document.getElementById('download-apk');
                     apkBtn.href = apkAsset.browser_download_url;
                     apkBtn.style.display = 'flex';
-                }
-
-                if (aabAsset) {
-                    const aabBtn = document.getElementById('download-aab');
-                    aabBtn.href = aabAsset.browser_download_url;
-                    aabBtn.style.display = 'flex';
                 }
 
             } catch (error) {
