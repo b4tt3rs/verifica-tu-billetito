@@ -1,4 +1,4 @@
-name: Build Android APK & AAB
+name: Build & Deploy
 
 on:
   push:
@@ -17,7 +17,35 @@ on:
           - both
 
 jobs:
-  build:
+  build-web:
+    name: Build Web App
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build Angular (production)
+        run: npm run build
+
+      - name: Upload web app artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-app
+          path: www/
+          retention-days: 7
+
+  build-android:
+    name: Build Android Artifacts
     runs-on: ubuntu-latest
 
     steps:
@@ -43,12 +71,11 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Decode and create keystore
+      - name: Decode keystore
         env:
           KEYSTORE_BASE64: ${{ secrets.KEYSTORE }}
         run: |
           echo "$KEYSTORE_BASE64" | base64 -d > billcheck-release.jks
-          ls -lh billcheck-release.jks
 
       - name: Build and sign release artifacts
         env:
@@ -75,19 +102,13 @@ jobs:
           path: android/app/build/outputs/bundle/release/app-release.aab
           retention-days: 30
 
-      - name: Upload web app artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: web-app
-          path: www/
-          retention-days: 7
-
       - name: Cleanup keystore
         if: always()
         run: rm -f billcheck-release.jks
 
   create-release:
-    needs: build
+    name: Create GitHub Release
+    needs: build-android
     runs-on: ubuntu-latest
 
     steps:
@@ -112,26 +133,22 @@ jobs:
           VERSION="v$(date +'%Y.%m.%d-%H%M%S')"
           echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
 
-      - name: Create Release (Versión específica)
+      - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ steps.version.outputs.VERSION }}
           name: Release ${{ steps.version.outputs.VERSION }}
-          draft: false
-          prerelease: false
           files: |
             ./apk/app-release-signed.apk
             ./aab/app-release.aab
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Create/Update Latest Release
+      - name: Update Latest Release
         uses: softprops/action-gh-release@v1
         with:
           tag_name: latest
           name: Latest Release
-          draft: false
-          prerelease: false
           files: |
             ./apk/app-release-signed.apk
             ./aab/app-release.aab
@@ -139,7 +156,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   deploy-pages:
-    needs: build
+    name: Deploy to GitHub Pages
+    needs: build-web
     runs-on: ubuntu-latest
 
     steps:
