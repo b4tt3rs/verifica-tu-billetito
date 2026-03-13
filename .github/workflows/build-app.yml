@@ -50,7 +50,7 @@ jobs:
         run: npm install
 
       - name: Build Angular (production)
-        run: npx ng build --configuration production --base-href /verifica-tu-billetito/app/
+        run: npm run build
 
       - name: Decode keystore
         env:
@@ -163,6 +163,7 @@ jobs:
           cp -r docs/* deploy/
           mkdir -p deploy/app
           cp -r www/* deploy/app/
+          sed -i 's|<base href="/">|<base href="/verifica-tu-billetito/app/">|' deploy/app/index.html
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
