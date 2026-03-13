@@ -59,13 +59,6 @@ jobs:
           chmod +x build-release.sh
           ./build-release.sh
 
-      - name: List build outputs
-        run: |
-          echo "=== APK outputs ==="
-          ls -lh android/app/build/outputs/apk/release/ || echo "No APK found"
-          echo "=== AAB outputs ==="
-          ls -lh android/app/build/outputs/bundle/release/ || echo "No AAB found"
-
       - name: Upload APK artifact
         if: success()
         uses: actions/upload-artifact@v4
@@ -81,12 +74,6 @@ jobs:
           name: app-release.aab
           path: android/app/build/outputs/bundle/release/app-release.aab
           retention-days: 30
-
-      - name: Verify Angular build output
-        run: |
-          echo "=== Contents of www/ ==="
-          ls -la www/ 2>/dev/null || echo "ERROR: www/ directory not found!"
-          echo ""
 
       - name: Upload web app artifact
         uses: actions/upload-artifact@v4
@@ -162,20 +149,9 @@ jobs:
           name: web-app
           path: ./deploy-dir
 
-      - name: Verify web app structure
-        run: |
-          echo "=== Contents of deploy-dir ==="
-          ls -la ./deploy-dir/
-          echo ""
-          echo "=== Checking index.html ==="
-          if [ -f "./deploy-dir/index.html" ]; then
-            echo "✓ index.html found"
-          else
-            echo "✗ ERROR: index.html NOT found!"
-          fi
-
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./deploy-dir
+          force_orphan: true
