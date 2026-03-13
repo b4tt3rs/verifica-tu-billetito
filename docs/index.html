@@ -237,6 +237,91 @@
                 padding: 24px;
             }
         }
+
+        /* Modal overlay */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-overlay.open {
+            display: flex;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 16px;
+            padding: 36px 32px 28px;
+            max-width: 440px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            animation: slideUp 0.25s ease;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .modal-icon {
+            font-size: 2.4rem;
+            margin-bottom: 12px;
+        }
+
+        .modal h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: #1a1a1a;
+        }
+
+        .modal p {
+            font-size: 0.95rem;
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 12px;
+        }
+
+        .modal-tip {
+            background: #fff8e1;
+            border-left: 3px solid #f59e0b;
+            border-radius: 6px;
+            padding: 12px 14px;
+            font-size: 0.9rem;
+            color: #7c5e0a;
+            margin-bottom: 24px;
+        }
+
+        .modal-actions {
+            display: grid;
+            gap: 10px;
+        }
+
+        .btn-confirm {
+            background: #1a1a1a;
+            color: white;
+        }
+
+        .btn-confirm:hover {
+            background: #333;
+            transform: translateY(-2px);
+        }
+
+        .btn-cancel {
+            background: #e8e8e8;
+            color: #1a1a1a;
+        }
+
+        .btn-cancel:hover {
+            background: #d0d0d0;
+            transform: translateY(-2px);
+        }
     </style>
 </head>
 <body>
@@ -251,7 +336,7 @@
         <div class="grid">
             <div class="card">
                 <h1>🇧🇴 Verifica tu billetito</h1>
-                <p data-i18n="app-desc">Ionic/Angular application to verify if a Bolivian banknote is on the list of banknotes disabled by the Central Bank of Bolivia (BCB).</p>
+                <p data-i18n="app-desc">Verifica si un billete boliviano está en la lista de billetes inhabilitados por el Banco Central de Bolivia (BCB).</p>
 
                 <hr style="margin: 24px 0; border: none; border-top: 1px solid #e0e0e0;">
 
@@ -266,12 +351,9 @@
                         <a href="#" class="btn btn-primary" id="download-apk" style="display:none;">
                             📱 APK
                         </a>
-                        <a href="#" class="btn btn-secondary" id="download-aab" style="display:none;">
-                            📦 AAB
-                        </a>
-                        <a href="./app/" target="_blank" class="btn btn-primary">
+<button onclick="openWebAppWarning()" class="btn btn-primary">
                             🌐 <span data-i18n="open-web-app">Abrir App Web</span>
-                        </a>
+                        </button>
                     </div>
 
                     <div id="no-releases" style="display:none; margin-top: 20px;">
@@ -329,6 +411,22 @@
         </div>
     </div>
 
+    <!-- Web app warning modal -->
+    <div class="modal-overlay" id="web-modal" role="dialog" aria-modal="true">
+        <div class="modal">
+            <div class="modal-icon">⚠️</div>
+            <h3 data-i18n="modal-title">Antes de continuar</h3>
+            <p data-i18n="modal-body">El escáner de la versión web puede ser menos preciso que la app móvil, especialmente en condiciones de poca luz o con billetes muy deteriorados.</p>
+            <div class="modal-tip">
+                💡 <span data-i18n="modal-tip">La versión móvil es mejor y más confiable. Te recomendamos descargar la app APK.</span>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-confirm" onclick="confirmWebApp()" data-i18n="modal-confirm">Continuar con la versión web</button>
+                <button class="btn btn-cancel" onclick="closeWebModal()" data-i18n="modal-cancel">Descargar la app APK (recomendado)</button>
+            </div>
+        </div>
+    </div>
+
     <footer>
         <p data-i18n="footer-text">Verifica tu billetito © 2026</p>
     </footer>
@@ -336,7 +434,7 @@
     <script>
         const translations = {
             es: {
-                'app-desc': 'Aplicación Ionic/Angular para verificar si un billete boliviano está en la lista de billetes inhabilitados por el Banco Central de Bolivia (BCB).',
+                'app-desc': 'Verifica si un billete boliviano está en la lista de billetes inhabilitados por el Banco Central de Bolivia (BCB).',
                 'download-title': '📥 Descargar',
                 'open-web-app': 'Abrir App Web',
                 'no-releases': 'No hay releases disponibles',
@@ -359,10 +457,15 @@
                 'space-value': '~50 MB disponibles',
                 'camera-label': 'Cámara',
                 'camera-value': 'Requerida para escanear',
-                'footer-text': 'Verifica tu billetito © 2026'
+                'footer-text': 'Verifica tu billetito © 2026',
+                'modal-title': 'Antes de continuar',
+                'modal-body': 'El escáner de la versión web puede ser menos preciso que la app móvil, especialmente en condiciones de poca luz o con billetes muy deteriorados.',
+                'modal-tip': 'La versión móvil es mejor y más confiable. Te recomendamos descargar la app APK.',
+                'modal-confirm': 'Continuar con la versión web',
+                'modal-cancel': 'Descargar la app APK (recomendado)'
             },
             en: {
-                'app-desc': 'Ionic/Angular application to verify if a Bolivian banknote is on the list of banknotes disabled by the Central Bank of Bolivia (BCB).',
+                'app-desc': 'Check if a Bolivian banknote is on the list of banknotes disabled by the Central Bank of Bolivia (BCB).',
                 'download-title': '📥 Download',
                 'open-web-app': 'Open Web App',
                 'no-releases': 'No releases available',
@@ -385,7 +488,12 @@
                 'space-value': '~50 MB available',
                 'camera-label': 'Camera',
                 'camera-value': 'Required to scan',
-                'footer-text': 'Verifica tu billetito © 2026'
+                'footer-text': 'Verifica tu billetito © 2026',
+                'modal-title': 'Before you continue',
+                'modal-body': 'The web scanner may be less accurate than the mobile app — especially in low-light conditions or with heavily worn banknotes.',
+                'modal-tip': 'The mobile version is better and more reliable. We recommend downloading the APK app.',
+                'modal-confirm': 'Continue with the web version',
+                'modal-cancel': 'Download the APK app (recommended)'
             }
         };
 
@@ -430,6 +538,28 @@
             }
         }
 
+        function openWebAppWarning() {
+            document.getElementById('web-modal').classList.add('open');
+        }
+
+        function closeWebModal() {
+            document.getElementById('web-modal').classList.remove('open');
+            const apkBtn = document.getElementById('download-apk');
+            if (apkBtn && apkBtn.href !== '#') {
+                apkBtn.click();
+            }
+        }
+
+        function confirmWebApp() {
+            document.getElementById('web-modal').classList.remove('open');
+            window.open('./app/', '_blank');
+        }
+
+        // Close modal when clicking the overlay background
+        document.getElementById('web-modal').addEventListener('click', function(e) {
+            if (e.target === this) closeWebModal();
+        });
+
         async function getLatestRelease() {
             try {
                 let owner = 'b4tt3rs';
@@ -452,18 +582,11 @@
                 updateDateFormat(currentLanguage);
 
                 const apkAsset = release.assets.find(a => a.name.includes('.apk'));
-                const aabAsset = release.assets.find(a => a.name.includes('.aab'));
 
                 if (apkAsset) {
                     const apkBtn = document.getElementById('download-apk');
                     apkBtn.href = apkAsset.browser_download_url;
                     apkBtn.style.display = 'flex';
-                }
-
-                if (aabAsset) {
-                    const aabBtn = document.getElementById('download-aab');
-                    aabBtn.href = aabAsset.browser_download_url;
-                    aabBtn.style.display = 'flex';
                 }
 
             } catch (error) {
