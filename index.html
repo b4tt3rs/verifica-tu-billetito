@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verifica tu billetito</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: #1a1a1a;
+            background: #f5f5f5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px 120px 20px;
+        }
+
+        header {
+            display: none;
+        }
+
+        .card h1 {
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+            margin-top: 0;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .card > p:first-of-type {
+            font-size: 1rem;
+            color: #666;
+            font-weight: 400;
+            line-height: 1.6;
+            margin-bottom: 0;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            border: 1px solid #e0e0e0;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            border-color: #333;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .card h2 {
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .download-section {
+            margin-bottom: 20px;
+        }
+
+        .version-info {
+            background: #f9f9f9;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 3px solid #1a1a1a;
+        }
+
+        .version-number {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .version-date {
+            font-size: 0.9rem;
+            color: #999;
+            margin-top: 4px;
+        }
+
+        .buttons {
+            display: grid;
+            gap: 12px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 14px 24px;
+            border-radius: 8px;
+            border: none;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: #1a1a1a;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #333;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #e8e8e8;
+            color: #1a1a1a;
+        }
+
+        .btn-secondary:hover {
+            background: #d0d0d0;
+            transform: translateY(-2px);
+        }
+
+        .steps {
+            counter-reset: step-counter;
+        }
+
+        .step {
+            counter-increment: step-counter;
+            margin-bottom: 20px;
+            padding-left: 50px;
+            position: relative;
+        }
+
+        .step::before {
+            content: counter(step-counter);
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 40px;
+            height: 40px;
+            background: #1a1a1a;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .step h4 {
+            font-size: 1rem;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+
+        .step p {
+            color: #666;
+            font-size: 0.95rem;
+        }
+
+        .no-releases {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+
+        .lang-selector {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 8px;
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 4px;
+            z-index: 200;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        }
+
+        .lang-btn {
+            padding: 6px 12px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #999;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .lang-btn.active {
+            background: #1a1a1a;
+            color: white;
+        }
+
+        footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            text-align: center;
+            padding: 20px;
+            color: #999;
+            font-size: 0.9rem;
+            border-top: 1px solid #e0e0e0;
+            background: #f5f5f5;
+        }
+
+        @media (max-width: 768px) {
+            .card h1 {
+                font-size: 1.6rem;
+            }
+
+            .grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .card {
+                padding: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header></header>
+
+    <div class="lang-selector">
+        <button class="lang-btn active" data-lang="es">🇪🇸 ES</button>
+        <button class="lang-btn" data-lang="en">🇬🇧 EN</button>
+    </div>
+
+    <div class="container">
+        <div class="grid">
+            <div class="card">
+                <h1>🇧🇴 Verifica tu billetito</h1>
+                <p data-i18n="app-desc">Ionic/Angular application to verify if a Bolivian banknote is on the list of banknotes disabled by the Central Bank of Bolivia (BCB).</p>
+
+                <hr style="margin: 24px 0; border: none; border-top: 1px solid #e0e0e0;">
+
+                <h2 data-i18n="download-title">📥 Descargar</h2>
+                <div class="download-section">
+                    <div class="version-info">
+                        <div class="version-number" id="latest-version">Cargando...</div>
+                        <div class="version-date" id="latest-date"></div>
+                    </div>
+
+                    <div class="buttons">
+                        <a href="#" class="btn btn-primary" id="download-apk" style="display:none;">
+                            📱 APK
+                        </a>
+                        <a href="#" class="btn btn-secondary" id="download-aab" style="display:none;">
+                            📦 AAB
+                        </a>
+                        <a href="./app/" target="_blank" class="btn btn-primary">
+                            🌐 <span data-i18n="open-web-app">Abrir App Web</span>
+                        </a>
+                    </div>
+
+                    <div id="no-releases" style="display:none; margin-top: 20px;">
+                        <p style="color: #999; margin-bottom: 15px;" data-i18n="no-releases">No hay releases disponibles</p>
+                        <a href="#" class="btn btn-primary" id="github-releases" data-i18n="view-github">
+                            Ver en GitHub
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 data-i18n="install-title">📖 Cómo instalar</h2>
+                <div class="steps">
+                    <div class="step">
+                        <h4 data-i18n="step1-title">Descargar</h4>
+                        <p data-i18n="step1-desc">Haz clic en el botón APK para descargar la app</p>
+                    </div>
+                    <div class="step">
+                        <h4 data-i18n="step2-title">Permitir fuentes desconocidas</h4>
+                        <p data-i18n="step2-desc">Ve a Configuración → Seguridad y habilita "Instalar apps desconocidas"</p>
+                    </div>
+                    <div class="step">
+                        <h4 data-i18n="step3-title">Abrir archivo</h4>
+                        <p data-i18n="step3-desc">Abre el archivo APK descargado desde tu gestor de archivos</p>
+                    </div>
+                    <div class="step">
+                        <h4 data-i18n="step4-title">Instalar</h4>
+                        <p data-i18n="step4-desc">Toca "Instalar" y espera a que termine</p>
+                    </div>
+                    <div class="step">
+                        <h4 data-i18n="step5-title">¡Listo!</h4>
+                        <p data-i18n="step5-desc">La app estará en tu menú de aplicaciones</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 data-i18n="requirements-title">✅ Requisitos</h2>
+                <div style="display: grid; gap: 16px;">
+                    <div>
+                        <div style="font-weight: 600; margin-bottom: 4px;" data-i18n="android-label">Android</div>
+                        <div style="color: #666;" data-i18n="android-value">6.0 o superior</div>
+                    </div>
+                    <div>
+                        <div style="font-weight: 600; margin-bottom: 4px;" data-i18n="space-label">Espacio</div>
+                        <div style="color: #666;" data-i18n="space-value">~50 MB disponibles</div>
+                    </div>
+                    <div>
+                        <div style="font-weight: 600; margin-bottom: 4px;" data-i18n="camera-label">Cámara</div>
+                        <div style="color: #666;" data-i18n="camera-value">Requerida para escanear</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p data-i18n="footer-text">Verifica tu billetito © 2026</p>
+    </footer>
+
+    <script>
+        const translations = {
+            es: {
+                'app-desc': 'Aplicación Ionic/Angular para verificar si un billete boliviano está en la lista de billetes inhabilitados por el Banco Central de Bolivia (BCB).',
+                'download-title': '📥 Descargar',
+                'open-web-app': 'Abrir App Web',
+                'no-releases': 'No hay releases disponibles',
+                'view-github': 'Ver en GitHub',
+                'install-title': '📖 Cómo instalar',
+                'step1-title': 'Descargar',
+                'step1-desc': 'Haz clic en el botón APK para descargar la app',
+                'step2-title': 'Permitir fuentes desconocidas',
+                'step2-desc': 'Ve a Configuración → Seguridad y habilita "Instalar apps desconocidas"',
+                'step3-title': 'Abrir archivo',
+                'step3-desc': 'Abre el archivo APK descargado desde tu gestor de archivos',
+                'step4-title': 'Instalar',
+                'step4-desc': 'Toca "Instalar" y espera a que termine',
+                'step5-title': '¡Listo!',
+                'step5-desc': 'La app estará en tu menú de aplicaciones',
+                'requirements-title': '✅ Requisitos',
+                'android-label': 'Android',
+                'android-value': '6.0 o superior',
+                'space-label': 'Espacio',
+                'space-value': '~50 MB disponibles',
+                'camera-label': 'Cámara',
+                'camera-value': 'Requerida para escanear',
+                'footer-text': 'Verifica tu billetito © 2026'
+            },
+            en: {
+                'app-desc': 'Ionic/Angular application to verify if a Bolivian banknote is on the list of banknotes disabled by the Central Bank of Bolivia (BCB).',
+                'download-title': '📥 Download',
+                'open-web-app': 'Open Web App',
+                'no-releases': 'No releases available',
+                'view-github': 'View on GitHub',
+                'install-title': '📖 How to Install',
+                'step1-title': 'Download',
+                'step1-desc': 'Click the APK button to download the app',
+                'step2-title': 'Allow unknown sources',
+                'step2-desc': 'Go to Settings → Security and enable "Install apps from unknown sources"',
+                'step3-title': 'Open file',
+                'step3-desc': 'Open the downloaded APK file from your file manager',
+                'step4-title': 'Install',
+                'step4-desc': 'Tap "Install" and wait for it to complete',
+                'step5-title': 'Done!',
+                'step5-desc': 'The app will be in your applications menu',
+                'requirements-title': '✅ Requirements',
+                'android-label': 'Android',
+                'android-value': '6.0 or higher',
+                'space-label': 'Space',
+                'space-value': '~50 MB available',
+                'camera-label': 'Camera',
+                'camera-value': 'Required to scan',
+                'footer-text': 'Verifica tu billetito © 2026'
+            }
+        };
+
+        let currentLanguage = localStorage.getItem('language') || 'es';
+
+        function setLanguage(lang) {
+            currentLanguage = lang;
+            localStorage.setItem('language', lang);
+
+            document.documentElement.lang = lang;
+
+            // Update all translatable elements
+            Object.keys(translations[lang]).forEach(key => {
+                const elements = document.querySelectorAll(`[data-i18n="${key}"]`);
+                elements.forEach(el => {
+                    el.textContent = translations[lang][key];
+                });
+            });
+
+            // Update language selector buttons
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.lang === lang);
+            });
+
+            // Update date format
+            updateDateFormat(lang);
+        }
+
+        function updateDateFormat(lang) {
+            const dateEl = document.getElementById('latest-date');
+            if (dateEl && dateEl.dataset.timestamp) {
+                const releaseDate = new Date(dateEl.dataset.timestamp);
+                const locale = lang === 'es' ? 'es-BO' : 'en-US';
+                const dateStr = releaseDate.toLocaleDateString(locale, {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                dateEl.textContent = dateStr;
+            }
+        }
+
+        async function getLatestRelease() {
+            try {
+                let owner = 'b4tt3rs';
+                let repo = 'verifica-tu-billetito';
+
+                if (window.location.hostname.includes('github.io')) {
+                    owner = window.location.hostname.split('.')[0];
+                }
+
+                const apiUrl = `https://api.github.com/repos/${owner}/${repo}/releases/tags/latest`;
+
+                const response = await fetch(apiUrl);
+                if (!response.ok) throw new Error('No releases found');
+
+                const release = await response.json();
+
+                document.getElementById('latest-version').textContent = release.tag_name;
+                document.getElementById('latest-date').dataset.timestamp = release.published_at;
+
+                updateDateFormat(currentLanguage);
+
+                const apkAsset = release.assets.find(a => a.name.includes('.apk'));
+                const aabAsset = release.assets.find(a => a.name.includes('.aab'));
+
+                if (apkAsset) {
+                    const apkBtn = document.getElementById('download-apk');
+                    apkBtn.href = apkAsset.browser_download_url;
+                    apkBtn.style.display = 'flex';
+                }
+
+                if (aabAsset) {
+                    const aabBtn = document.getElementById('download-aab');
+                    aabBtn.href = aabAsset.browser_download_url;
+                    aabBtn.style.display = 'flex';
+                }
+
+            } catch (error) {
+                console.error('Error fetching release:', error);
+                document.getElementById('latest-version').textContent = currentLanguage === 'es' ? 'Sin releases' : 'No releases';
+                document.getElementById('latest-date').textContent = currentLanguage === 'es' ? 'No disponible' : 'Not available';
+                document.getElementById('no-releases').style.display = 'block';
+
+                const owner = window.location.hostname.includes('github.io')
+                    ? window.location.hostname.split('.')[0]
+                    : 'b4tt3rs';
+                document.getElementById('github-releases').href = `https://github.com/${owner}/billcheck/releases`;
+            }
+        }
+
+        // Set initial language
+        setLanguage(currentLanguage);
+
+        // Add event listeners to language buttons
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.addEventListener('click', () => setLanguage(btn.dataset.lang));
+        });
+
+        getLatestRelease();
+    </script>
+</body>
+</html>

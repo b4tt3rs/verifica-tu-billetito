@@ -1,0 +1,1 @@
+import{b as e}from"./chunk-4QGG3GA5.js";import"./chunk-4CLCTAJ7.js";var t=class extends e{detectText(m){return Promise.reject("Web Plugin Not implemented")}};export{t as CapacitorPluginMlKitTextRecognitionWeb};
