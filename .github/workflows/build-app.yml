@@ -37,11 +37,23 @@ jobs:
       - name: Build Angular (production)
         run: npm run build
 
+      - name: Copy web app to docs/app
+        run: |
+          mkdir -p docs/app
+          cp -r www/* docs/app/
+
       - name: Upload web app artifact
         uses: actions/upload-artifact@v4
         with:
           name: web-app
           path: www/
+          retention-days: 7
+
+      - name: Upload docs artifact (for GitHub Pages)
+        uses: actions/upload-artifact@v4
+        with:
+          name: docs-folder
+          path: docs/
           retention-days: 7
 
   build-android:
@@ -161,10 +173,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Download web app artifact
+      - name: Download docs artifact
         uses: actions/download-artifact@v4
         with:
-          name: web-app
+          name: docs-folder
           path: ./deploy-dir
 
       - name: Deploy to GitHub Pages
